@@ -41,11 +41,11 @@ body {
 
 /* Custom style for active navigation button */
 .active-nav-button {
-    background-color: theme('colors.emerald.500');
+    background-color: theme('colors.amber.500'); /* Changed to amber */
     color: white;
     box-shadow: theme('boxShadow.lg');
 }
 .dark .active-nav-button {
-    background-color: theme('colors.emerald.600');
+    background-color: theme('colors.amber.600'); /* Changed to amber */
     color: white;
 }
