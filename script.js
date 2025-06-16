@@ -115,34 +115,34 @@ function showAlert(message, type = 'info') {
         switch (type) {
             case 'success':
                 alertIcon.classList.add('fas', 'fa-check-circle', 'text-emerald-500');
-                alertOkButton.textContent = 'OK';
+                alertOkButton.textContent = 'Got it, Counselor!';
                 alertOkButton.classList.remove('bg-rose-500');
-                alertOkButton.classList.add('bg-emerald-500');
+                alertOkButton.classList.add('bg-amber-500'); // Changed to amber
                 break;
             case 'error':
                 alertIcon.classList.add('fas', 'fa-times-circle', 'text-rose-500');
-                alertOkButton.textContent = 'OK';
-                alertOkButton.classList.remove('bg-emerald-500');
+                alertOkButton.textContent = 'Damn it, Jesse!'; // A little Breaking Bad crossover
+                alertOkButton.classList.remove('bg-amber-500'); // Changed from emerald
                 alertOkButton.classList.add('bg-rose-500');
                 break;
             case 'warning':
                 alertIcon.classList.add('fas', 'fa-exclamation-triangle', 'text-amber-500');
-                alertOkButton.textContent = 'OK';
+                alertOkButton.textContent = 'Proceed with Caution!';
                 alertOkButton.classList.remove('bg-rose-500');
-                alertOkButton.classList.add('bg-emerald-500');
+                alertOkButton.classList.add('bg-amber-500'); // Changed to amber
                 break;
             case 'confirm':
                 alertIcon.classList.add('fas', 'fa-question-circle', 'text-sky-500');
-                alertOkButton.textContent = 'Confirm';
+                alertOkButton.textContent = 'Yes, Your Honor.';
                 alertOkButton.classList.remove('bg-rose-500');
-                alertOkButton.classList.add('bg-emerald-500');
+                alertOkButton.classList.add('bg-amber-500'); // Changed to amber
                 alertCancelButton.classList.remove('hidden');
                 break;
             default: // info
                 alertIcon.classList.add('fas', 'fa-info-circle', 'text-blue-500');
-                alertOkButton.textContent = 'OK';
+                alertOkButton.textContent = 'Alright, Alright.';
                 alertOkButton.classList.remove('bg-rose-500');
-                alertOkButton.classList.add('bg-emerald-500');
+                alertOkButton.classList.add('bg-amber-500'); // Changed to amber
                 break;
         }
 
@@ -181,7 +181,7 @@ function saveTransactions() {
         localStorage.setItem('expenseTrackerTransactions', JSON.stringify(transactions));
     } catch (e) {
         console.error("Error saving to local storage:", e);
-        showAlert("Failed to save data. Your browser may be in private mode or storage is full.", 'error');
+        showAlert("Failed to save data. Your browser may be in private mode or storage is full. Better call Saul!", 'error');
     }
 }
 
@@ -195,7 +195,7 @@ function loadTransactions() {
         return storedTransactions ? JSON.parse(storedTransactions) : [];
     } catch (e) {
         console.error("Error loading from local storage:", e);
-        showAlert("Failed to load saved data. Data might be corrupted.", 'error');
+        showAlert("Failed to load your financial records. Something fishy is going on, friend.", 'error');
         return []; // Return empty array to prevent app crash
     }
 }
@@ -338,12 +338,22 @@ function updateCharts() {
     const monthlyLabels = sortedMonths;
     const monthlyValues = sortedMonths.map(month => monthlyExpenses[month]);
 
-    const chartColors = [
-        '#10B981', '#EF4444', '#0EA5E9', '#EAB308', '#6366F1',
-        '#EC4899', '#84CC16', '#F97316', '#14B8A6', '#A855F7',
-        '#FACC15', '#6B7280', '#D946EF', '#22D3EE', '#FB7185'
+    // Saul-themed chart colors
+    const saulChartColors = [
+        '#F59E0B', // Amber 500
+        '#DC2626', // Red 600 (for strong expense)
+        '#0EA5E9', // Sky 500
+        '#6D28D9', // Violet 600 (Saul's suit often purple/blue)
+        '#10B981', // Emerald 500
+        '#EAB308', // Yellow 500
+        '#DB2777', // Pink 600
+        '#84CC16', // Lime 500
+        '#F97316', // Orange 500
+        '#64748B', // Slate 500
+        '#7C3AED', // Violet 400
+        '#16A34A', // Green 600
     ];
-    const borderColors = chartColors.map(color => {
+    const borderColors = saulChartColors.map(color => {
         const rgba = Chart.helpers.color(color).alpha(0.8).rgbString();
         return rgba;
     });
@@ -360,7 +370,7 @@ function updateCharts() {
             labels: categoryLabels,
             datasets: [{
                 data: categoryValues,
-                backgroundColor: chartColors.slice(0, categoryLabels.length),
+                backgroundColor: saulChartColors.slice(0, categoryLabels.length),
                 borderColor: borderColors.slice(0, categoryLabels.length),
                 borderWidth: 1
             }]
@@ -393,7 +403,7 @@ function updateCharts() {
             labels: categoryLabels,
             datasets: [{
                 data: categoryValues,
-                backgroundColor: chartColors.slice(0, categoryLabels.length),
+                backgroundColor: saulChartColors.slice(0, categoryLabels.length),
                 borderColor: borderColors.slice(0, categoryLabels.length),
                 borderWidth: 1
             }]
@@ -427,8 +437,8 @@ function updateCharts() {
             datasets: [{
                 label: 'Monthly Expenses',
                 data: monthlyValues,
-                backgroundColor: chartColors[2] || '#0EA5E9', // Sky-500
-                borderColor: borderColors[2] || '#0EA5E9',
+                backgroundColor: saulChartColors[0] || '#F59E0B', // Amber 500
+                borderColor: borderColors[0] || '#F59E0B',
                 borderWidth: 1
             }]
         },
@@ -473,18 +483,18 @@ function showModal(transactionData = null) {
 
     if (transactionData) {
         // Populate form for editing
-        modalTitle.textContent = 'Edit Transaction';
+        modalTitle.textContent = 'Amend Your Legal Filing';
         transactionIdInput.value = transactionData.id;
         transactionTitleInput.value = transactionData.title;
         transactionAmountInput.value = transactionData.amount;
         transactionTypeSelect.value = transactionData.type;
         transactionCategorySelect.value = transactionData.category;
-        transactionDateInput.value = transactionData.date; // YYYY-MM-DD
+        transactionDateInput.value = transactionData.date; //YYYY-MM-DD
         transactionRecurringCheckbox.checked = transactionData.recurring || false;
         currentEditingTransactionId = transactionData.id;
     } else {
         // Set default values for new transaction
-        modalTitle.textContent = 'Add New Transaction';
+        modalTitle.textContent = 'File a New Transaction';
         transactionDateInput.value = new Date().toISOString().split('T')[0]; // Set today's date
     }
 
@@ -537,12 +547,12 @@ function updateTransaction(id, newData) {
  * @param {string} id - The ID of the transaction to delete.
  */
 async function deleteTransaction(id) {
-    const confirmed = await showAlert('Are you sure you want to delete this transaction?', 'confirm');
+    const confirmed = await showAlert('Are you sure you want to dismiss this case (delete this transaction)?', 'confirm');
     if (confirmed) {
         transactions = transactions.filter(t => t.id !== id);
         saveTransactions();
         renderAllUI();
-        showAlert('Transaction deleted successfully!', 'success');
+        showAlert('Case dismissed! Transaction successfully deleted.', 'success');
     }
 }
 
@@ -588,7 +598,7 @@ function filterTransactions() {
                 return transactionDate >= firstDayOfWeek && transactionDate <= today;
             } else if (dateFilter === 'this_month') {
                 return transactionDate.getMonth() === today.getMonth() &&
-                       transactionDate.getFullYear() === today.getFullYear();
+                               transactionDate.getFullYear() === today.getFullYear();
             } else if (dateFilter === 'custom') {
                 const startDate = customStartDateInput.value ? new Date(customStartDateInput.value) : null;
                 const endDate = customEndDateInput.value ? new Date(customEndDateInput.value) : null;
@@ -597,7 +607,7 @@ function filterTransactions() {
                 if (endDate) endDate.setHours(23, 59, 59, 999); // End of day for end date
 
                 return (!startDate || transactionDate >= startDate) &&
-                       (!endDate || transactionDate <= endDate);
+                               (!endDate || transactionDate <= endDate);
             }
             return true;
         });
@@ -653,7 +663,7 @@ function initializeDarkMode() {
  */
 function exportToCSV() {
     if (transactions.length === 0) {
-        showAlert('No transactions to export.', 'warning');
+        showAlert('No transactions to export. What kind of legal records are these?', 'warning');
         return;
     }
 
@@ -678,14 +688,14 @@ function exportToCSV() {
     if (link.download !== undefined) { // Feature detection for download attribute
         const url = URL.createObjectURL(blob);
         link.setAttribute('href', url);
-        link.setAttribute('download', 'expense_tracker_transactions.csv');
+        link.setAttribute('download', 'saul_goodman_ledger.csv'); // Changed filename
         link.style.visibility = 'hidden'; // Hide the link
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        showAlert('Transaction history exported to CSV!', 'success');
+        showAlert('Your ledger has been exported! It\'s all good, man!', 'success');
     } else {
-        showAlert('Your browser does not support downloading files directly.', 'error');
+        showAlert('Your browser does not support downloading legal documents directly.', 'error');
     }
 }
 
@@ -782,16 +792,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Basic validation
         if (!transactionData.title || isNaN(transactionData.amount) || transactionData.amount <= 0 || !transactionData.category) {
-            showAlert('Please fill in all fields correctly.', 'error');
+            showAlert('Whoa there, partner! Please fill in all fields correctly. We can\'t have any loose ends here.', 'error');
             return;
         }
 
         if (currentEditingTransactionId) {
             updateTransaction(currentEditingTransactionId, transactionData);
-            showAlert('Transaction updated successfully!', 'success');
+            showAlert('Transaction amendment successful! Now that\'s good lawyering.', 'success');
         } else {
             addTransaction(transactionData);
-            showAlert('Transaction added successfully!', 'success');
+            showAlert('Transaction filed! You\'re on your way to becoming a financial hotshot.', 'success');
         }
         hideModal(); // Close modal after submission
     });
