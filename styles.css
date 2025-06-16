@@ -1,33 +1,129 @@
-/* Base font and smooth transitions for theme change */
-body {
-    font-family: 'Inter', sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
+/* Google Fonts - Montserrat */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* Color Palette Variables */
+:root {
+    /* Light Theme Palette (your provided colors) */
+    --color-chili-red: #e62314;
+    --color-chili-red-2: #e83715;
+    --color-golden-gate-bridge: #ea4c15;
+    --color-persimmon: #ec6116;
+    --color-safety-orange: #ed7517;
+    --color-tangerine: #ef8a17;
+    --color-gamboge: #f19e18;
+
+    /* Base Colors for Light Theme */
+    --color-background-light: #f8fafc; /* Equivalent to slate-50 */
+    --color-text-dark: #1e293b; /* Equivalent to slate-900 */
+    --color-surface-light: #ffffff; /* Equivalent to white */
+    --color-text-medium: #475569; /* Equivalent to slate-600 */
+    --color-text-subtle: #64748b; /* Equivalent to slate-500 */
+    --color-border-light: #cbd5e1; /* Equivalent to slate-300 */
+
+    /* Accent Colors (derived from your palette or kept similar to original) */
+    --color-accent-primary: var(--color-safety-orange); /* Main button color */
+    --color-accent-primary-hover: #e06c00; /* Slightly darker orange */
+    --color-accent-primary-ring: rgba(237, 117, 23, 0.4); /* Amber ring effect */
+
+    --color-income: #059669; /* Equivalent to emerald-600 */
+    --color-income-darker: #047857;
+    --color-expense: #e11d48; /* Equivalent to rose-600 */
+    --color-expense-darker: #be123c;
+    --color-balance: #0ea5e9; /* Equivalent to sky-600 */
+    --color-balance-darker: #0284c7;
+    --color-info: #3b82f6; /* Equivalent to blue-600 */
+    --color-info-darker: #2563eb;
+    --color-danger: #ef4444; /* Equivalent to rose-500 */
+    --color-danger-hover: #dc2626;
+
+    --color-nav-button-default-hover: #f1f5f9; /* Equivalent to slate-100 */
+    --color-nav-button-active-light: var(--color-gamboge); /* Active nav button color */
+    --color-nav-button-active-text: #ffffff;
+    --color-nav-button-active-dark-bg: var(--color-chili-red); /* Dark mode active nav button */
+
+    --color-purple-bg: #ede9fe; /* Equivalent to purple-100 */
+    --color-purple-text: #6d28d9; /* Equivalent to purple-800 */
 }
+
+/* Dark Mode Palette Variables (using a black/gold/red UI like the image you shared) */
+html.dark {
+    --color-background-light: #18181b; /* Equivalent to zinc-900, or deep black */
+    --color-text-dark: #f4f4f5; /* Equivalent to zinc-50 */
+    --color-surface-light: #27272a; /* Equivalent to zinc-800 */
+    --color-text-medium: #a1a1aa; /* Equivalent to zinc-400 */
+    --color-text-subtle: #71717a; /* Equivalent to zinc-500 */
+    --color-border-light: #52525b; /* Equivalent to zinc-600 */
+
+    /* Dark Mode Accents - using gold/amber theme for buttons/active elements */
+    --color-accent-primary: #fcd34d; /* Equivalent to amber-300/400 for dark mode */
+    --color-accent-primary-hover: #fbbf24; /* Slightly darker gold */
+    --color-accent-primary-ring: rgba(252, 211, 77, 0.4);
+
+    --color-income: #4ade80; /* Equivalent to emerald-400 */
+    --color-expense: #f87171; /* Equivalent to rose-400 */
+    --color-balance: #7dd3fc; /* Equivalent to sky-400 */
+    --color-info: #60a5fa; /* Equivalent to blue-400 */
+    --color-danger: #f87171; /* Equivalent to rose-500 */
+    --color-danger-hover: #ef4444;
+
+    --color-nav-button-default-hover: #3f3f46; /* Equivalent to zinc-700 */
+    --color-nav-button-active-light: var(--color-chili-red-2); /* Dark active nav button */
+    --color-nav-button-active-text: #ffffff;
+    --color-nav-button-active-dark-bg: var(--color-chili-red);
+
+    --color-purple-bg: #581c87; /* Darker purple for recurring tag */
+    --color-purple-text: #a78bfa;
+}
+
+/* Base Styles and Global Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif; /* Or 'Open Sans', 'Lato', etc. */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* Light Mode Gradient */
+    background: linear-gradient(135deg, var(--color-chili-red), var(--color-gamboge));
+    color: var(--color-text-dark);
+    transition: background 0.5s ease, color 0.5s ease; /* Smooth transition for background */
+}
+
+/* Dark Mode Gradient */
+html.dark body {
+    background: linear-gradient(135deg, #000000, #1a1a1a, #2a2a2a); /* Darker, subtle gradient */
+    color: var(--color-text-dark);
+}
+
 /* Custom scrollbar for better aesthetics */
 ::-webkit-scrollbar {
     width: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--color-background-light);
     border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: var(--color-text-medium);
     border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: var(--color-text-subtle);
 }
 
 /* Dark mode scrollbar styles */
-.dark ::-webkit-scrollbar-track {
-    background: #333;
+html.dark ::-webkit-scrollbar-track {
+    background: var(--color-surface-light);
 }
-.dark ::-webkit-scrollbar-thumb {
-    background: #555;
+html.dark ::-webkit-scrollbar-thumb {
+    background: var(--color-text-subtle);
 }
-.dark ::-webkit-scrollbar-thumb:hover {
-    background: #777;
+html.dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-medium);
 }
 
 /* Utility class to hide scrollbar without affecting content flow */
@@ -39,13 +135,679 @@ body {
     scrollbar-width: none;  /* Firefox */
 }
 
-/* Custom style for active navigation button */
-.active-nav-button {
-    background-color: theme('colors.amber.500'); /* Changed to amber */
-    color: white;
-    box-shadow: theme('boxShadow.lg');
+/* --- Header Styles --- */
+.app-header {
+    background-color: var(--color-surface-light);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-md */
+    padding: 1rem 1.5rem; /* Equivalent to py-4 px-6 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom-left-radius: 0.75rem; /* Equivalent to rounded-b-xl */
+    border-bottom-right-radius: 0.75rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
-.dark .active-nav-button {
-    background-color: theme('colors.amber.600'); /* Changed to amber */
+
+.header-title {
+    font-size: 1.875rem; /* Equivalent to text-3xl */
+    font-weight: 700; /* Equivalent to font-bold */
+    color: var(--color-text-dark);
+    display: flex;
+    align-items: center;
+}
+
+.header-icon {
+    height: 2rem; /* Equivalent to h-8 */
+    width: 2rem; /* Equivalent to w-8 */
+    margin-right: 0.75rem; /* Equivalent to mr-3 */
+    color: var(--color-gamboge); /* Use a color from your new palette */
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Equivalent to space-x-4 */
+}
+
+.header-tagline {
+    display: none; /* Equivalent to hidden md:block */
+    color: var(--color-text-medium);
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    font-style: italic;
+}
+@media (min-width: 768px) { /* md breakpoint */
+    .header-tagline {
+        display: block;
+    }
+}
+
+.dark-mode-toggle {
+    padding: 0.5rem; /* Equivalent to p-2 */
+    border-radius: 9999px; /* Equivalent to rounded-full */
+    background-color: var(--color-background-light); /* Equivalent to bg-slate-200 */
+    color: var(--color-text-dark); /* Equivalent to text-slate-800 */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: none;
+    cursor: pointer;
+    outline: none; /* Equivalent to focus:outline-none */
+}
+.dark-mode-toggle:hover {
+    background-color: var(--color-border-light); /* Equivalent to hover:bg-slate-300 */
+}
+.dark-mode-toggle:focus {
+    box-shadow: 0 0 0 4px var(--color-accent-primary-ring); /* Equivalent to focus:ring-4 focus:ring-amber-300 */
+}
+.dark-mode-toggle .light-icon,
+.dark-mode-toggle .dark-icon {
+    font-size: 1.125rem; /* Equivalent to text-lg */
+}
+
+/* --- Navigation Styles --- */
+.nav-bar {
+    background-color: var(--color-surface-light);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem; /* Equivalent to mt-4 */
+    margin-left: 1.5rem; /* Equivalent to mx-6 */
+    margin-right: 1.5rem; /* Equivalent to mx-6 */
+    padding: 0.5rem; /* Equivalent to p-2 */
+    border-radius: 0.75rem; /* Equivalent to rounded-xl */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-button {
+    flex: 1; /* Equivalent to flex-1 */
+    padding-top: 0.75rem; /* Equivalent to py-3 */
+    padding-bottom: 0.75rem; /* Equivalent to py-3 */
+    padding-left: 1rem; /* Equivalent to px-4 */
+    padding-right: 1rem; /* Equivalent to px-4 */
+    text-align: center;
+    border-radius: 0.5rem; /* Equivalent to rounded-lg */
+    color: var(--color-text-dark); /* Equivalent to text-slate-700 */
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-weight: 500; /* Equivalent to font-medium */
+    transition: background-color 0.2s ease, color 0.2s ease;
+    outline: none;
+}
+.nav-button:hover {
+    background-color: var(--color-nav-button-default-hover); /* Equivalent to hover:bg-slate-100 */
+}
+
+.active-nav-button {
+    background-color: var(--color-nav-button-active-light); /* Based on your provided amber */
+    color: var(--color-nav-button-active-text);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05); /* Equivalent to shadow-lg */
+}
+html.dark .active-nav-button {
+    background-color: var(--color-nav-button-active-dark-bg); /* Darker version for dark mode */
+}
+
+/* --- Main Content and View Styles --- */
+.main-content {
+    flex-grow: 1; /* Equivalent to flex-grow */
+    padding: 1.5rem; /* Equivalent to p-6 */
+}
+
+.view {
+    /* Initially hidden via JS */
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Dashboard Section --- */
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+    gap: 1.5rem; /* Equivalent to gap-6 */
+    margin-bottom: 2rem; /* Equivalent to mb-8 */
+}
+@media (min-width: 768px) { /* md breakpoint */
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr); /* Equivalent to md:grid-cols-3 */
+    }
+}
+
+.card {
+    background-color: var(--color-surface-light);
+    padding: 1.5rem; /* Equivalent to p-6 */
+    border-radius: 0.75rem; /* Equivalent to rounded-xl */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05); /* Equivalent to shadow-lg */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transform: scale(1); /* Base for hover effect */
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: scale(1.02); /* Equivalent to hover:scale-[1.02] */
+}
+
+.card-title {
+    font-size: 1.125rem; /* Equivalent to text-lg */
+    font-weight: 600; /* Equivalent to font-semibold */
+    margin-bottom: 0.5rem; /* Equivalent to mb-2 */
+}
+.income-title { color: var(--color-income); }
+.expense-title { color: var(--color-expense); }
+.balance-title { color: var(--color-balance); }
+
+.card-amount {
+    font-size: 2.25rem; /* Equivalent to text-4xl */
+    font-weight: 700; /* Equivalent to font-bold */
+    color: var(--color-text-dark);
+}
+/* Dynamic balance color handled by JS via inline styles/classes */
+
+.card-footer {
+    margin-top: 1rem; /* Equivalent to mt-4 */
+    text-align: right;
+}
+.card-last-updated {
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    color: var(--color-text-subtle);
+}
+
+.add-transaction-btn-container {
+    margin-bottom: 2rem; /* Equivalent to mb-8 */
+    text-align: center;
+}
+
+.add-transaction-btn {
+    background-color: var(--color-accent-primary);
     color: white;
+    font-weight: 700; /* Equivalent to font-bold */
+    padding: 0.75rem 2rem; /* Equivalent to py-3 px-8 */
+    border-radius: 9999px; /* Equivalent to rounded-full */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05); /* Equivalent to shadow-lg */
+    transform: scale(1);
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+.add-transaction-btn:hover {
+    background-color: var(--color-accent-primary-hover);
+    transform: scale(1.05); /* Equivalent to hover:scale-105 */
+}
+.add-transaction-btn:focus {
+    box-shadow: 0 0 0 4px var(--color-accent-primary-ring); /* Equivalent to focus:ring-4 focus:ring-amber-300 */
+}
+
+.icon-margin-right {
+    margin-right: 0.5rem; /* Equivalent to mr-2 */
+}
+
+.dashboard-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+    gap: 1.5rem; /* Equivalent to gap-6 */
+}
+@media (min-width: 1024px) { /* lg breakpoint */
+    .dashboard-bottom-grid {
+        grid-template-columns: repeat(2, 1fr); /* Equivalent to lg:grid-cols-2 */
+    }
+}
+
+.card-section-title {
+    font-size: 1.25rem; /* Equivalent to text-xl */
+    font-weight: 600; /* Equivalent to font-semibold */
+    color: var(--color-text-dark);
+    margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.recent-transactions-list {
+    max-height: 24rem; /* Equivalent to max-h-96 (96 * 0.25rem = 24rem) */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Equivalent to space-y-4 */
+}
+
+.recent-transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-background-light); /* Equivalent to bg-slate-50 */
+    padding: 1rem; /* Equivalent to p-4 */
+    border-radius: 0.5rem; /* Equivalent to rounded-lg */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Equivalent to shadow-sm */
+    transition: box-shadow 0.2s ease;
+}
+.recent-transaction-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to hover:shadow-md */
+}
+
+.recent-transaction-item div:first-child {
+    flex: 1; /* Equivalent to flex-1 */
+}
+
+.recent-transaction-item p:first-child {
+    color: var(--color-text-dark);
+    font-weight: 500; /* Equivalent to font-medium */
+}
+
+.recent-transaction-item p:nth-child(2) {
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    color: var(--color-text-subtle);
+}
+
+.recent-transaction-item .amount {
+    font-size: 1.125rem; /* Equivalent to text-lg */
+    font-weight: 600; /* Equivalent to font-semibold */
+}
+/* Colors set by JS for .amount */
+
+.recurring-tag {
+    margin-left: 0.5rem; /* Equivalent to ml-2 */
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.625rem; /* Equivalent to px-2.5 py-0.5 */
+    border-radius: 9999px; /* Equivalent to rounded-full */
+    font-size: 0.75rem; /* Equivalent to text-xs */
+    font-weight: 500; /* Equivalent to font-medium */
+    background-color: var(--color-purple-bg);
+    color: var(--color-purple-text);
+}
+.recurring-tag i {
+    margin-right: 0.25rem; /* Equivalent to mr-1 */
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--color-text-subtle);
+    padding-top: 2rem; /* Equivalent to py-8 */
+    padding-bottom: 2rem; /* Equivalent to py-8 */
+}
+
+.empty-state-icon {
+    font-size: 3.125rem; /* Equivalent to text-5xl */
+    margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.empty-state-text {
+    font-size: 1.125rem; /* Equivalent to text-lg */
+}
+
+.chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 24rem; /* Equivalent to h-96 */
+}
+
+.chart-caption {
+    text-align: center;
+    color: var(--color-text-subtle);
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    margin-top: 1rem; /* Equivalent to mt-4 */
+}
+
+/* --- History View Section --- */
+.section-title {
+    font-size: 1.5rem; /* Equivalent to text-2xl */
+    font-weight: 700; /* Equivalent to font-bold */
+    color: var(--color-text-dark);
+    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+}
+
+.filter-controls {
+    display: grid;
+    grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+    gap: 1rem; /* Equivalent to gap-4 */
+    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+}
+@media (min-width: 768px) { /* md breakpoint */
+    .filter-controls {
+        grid-template-columns: repeat(3, 1fr); /* Equivalent to md:grid-cols-3 */
+    }
+}
+
+.input-field,
+.select-field {
+    width: 100%;
+    padding: 0.75rem; /* Equivalent to p-3 */
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.5rem; /* Equivalent to rounded-lg */
+    background-color: var(--color-background-light); /* Equivalent to bg-slate-50 */
+    color: var(--color-text-dark);
+    transition: all 0.2s ease;
+    outline: none;
+}
+.input-field:focus,
+.select-field:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 2px var(--color-accent-primary); /* Equivalent to focus:ring-2 focus:ring-amber-500 */
+}
+
+.custom-date-range {
+    display: grid;
+    grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+    gap: 1rem; /* Equivalent to gap-4 */
+}
+@media (min-width: 768px) { /* md breakpoint */
+    .custom-date-range {
+        grid-column: span 3 / span 3; /* Equivalent to md:col-span-3 */
+        grid-template-columns: repeat(2, 1fr); /* Equivalent to md:grid-cols-2 */
+    }
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 0.5rem; /* Equivalent to rounded-lg */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-md */
+}
+
+.history-table {
+    min-width: 100%; /* Equivalent to min-w-full */
+    border-collapse: collapse; /* For divide-y behavior */
+}
+
+.table-header {
+    background-color: var(--color-background-light); /* Equivalent to bg-slate-100 */
+}
+
+.table-header tr {
+    border-bottom: 1px solid var(--color-border-light); /* Equivalent to divide-y divide-slate-200 */
+}
+
+.table-th {
+    padding: 0.75rem 1.5rem; /* Equivalent to py-3 px-6 */
+    text-align: left;
+    font-size: 0.75rem; /* Equivalent to text-xs */
+    font-weight: 500; /* Equivalent to font-medium */
+    color: var(--color-text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.05em; /* Equivalent to tracking-wider */
+}
+.actions-th {
+    text-align: center;
+}
+
+.table-body {
+    background-color: var(--color-surface-light);
+}
+
+.table-body tr {
+    border-bottom: 1px solid var(--color-border-light);
+    transition: background-color 0.15s ease;
+}
+.table-body tr:hover {
+    background-color: var(--color-nav-button-default-hover); /* Equivalent to hover:bg-slate-50 */
+}
+
+.table-body td {
+    padding: 0.75rem 1.5rem; /* Equivalent to py-3 px-6 */
+    white-space: nowrap; /* Equivalent to whitespace-nowrap */
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    color: var(--color-text-dark);
+}
+.table-body td:first-child {
+    font-weight: 500; /* Equivalent to font-medium */
+}
+.table-body td.text-emerald-600 { color: var(--color-income); }
+.table-body td.text-rose-600 { color: var(--color-expense); }
+
+.edit-btn,
+.delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    font-weight: 500; /* Equivalent to font-medium */
+    transition: color 0.15s ease;
+    outline: none;
+}
+.edit-btn {
+    color: var(--color-info);
+    margin-right: 0.75rem; /* Equivalent to mr-3 */
+}
+.edit-btn:hover {
+    color: var(--color-info-darker);
+}
+.delete-btn {
+    color: var(--color-danger);
+}
+.delete-btn:hover {
+    color: var(--color-danger-hover);
+}
+
+/* --- Reports View Section --- */
+.reports-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 31.25rem; /* Equivalent to min-h-[500px] (500/16 = 31.25rem) */
+}
+
+.reports-title {
+    font-size: 2.25rem; /* Equivalent to text-4xl */
+    font-weight: 700; /* Equivalent to font-bold */
+    color: var(--color-gamboge); /* Using a primary color from your palette */
+    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+    text-align: center;
+}
+
+.reports-text {
+    font-size: 1.25rem; /* Equivalent to text-xl */
+    color: var(--color-text-dark);
+    margin-bottom: 1rem; /* Equivalent to mb-4 */
+    text-align: center;
+    max-width: 42rem; /* Equivalent to max-w-2xl */
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    margin-right: 20px; /* Adjust spacing as needed */
+}
+
+.logo {
+    width: 90px; /* Adjust size as needed */
+    height: auto;
+    border-radius: 5px; /* Optional: for rounded corners */
+}
+
+.italic-text {
+    font-style: italic;
+    font-weight: 600; /* Equivalent to font-semibold */
+}
+
+.reports-caption {
+    font-size: 1rem; /* Equivalent to text-md */
+    color: var(--color-text-medium);
+    text-align: center;
+    max-width: 36rem; /* Equivalent to max-w-xl */
+}
+
+.reports-icon-container {
+    margin-top: 2rem; /* Equivalent to mt-8 */
+    color: var(--color-text-subtle);
+}
+
+.reports-icon {
+    font-size: 3.75rem; /* Equivalent to text-6xl */
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* Equivalent to animate-pulse */
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+}
+
+
+/* --- Modal Styles (Transaction and Alert) --- */
+.modal-overlay {
+    position: fixed;
+    inset: 0; /* Equivalent to inset-0 */
+    background-color: rgba(0, 0, 0, 0.5); /* Equivalent to bg-black bg-opacity-50 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem; /* Equivalent to p-4 */
+    z-index: 50; /* Equivalent to z-50 */
+    opacity: 0; /* For transition */
+    transition: opacity 0.3s ease;
+    visibility: hidden; /* Start hidden */
+}
+.modal-overlay.hidden {
+    display: none; /* Hide with JS */
+    visibility: hidden;
+}
+.modal-overlay.opacity-100 {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background-color: var(--color-surface-light);
+    padding: 2rem; /* Equivalent to p-8 */
+    border-radius: 0.75rem; /* Equivalent to rounded-xl */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-2xl */
+    width: 100%;
+    max-width: 28rem; /* Equivalent to max-w-md */
+    transform: scale(0.95); /* For transition */
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.modal-overlay.opacity-100 .modal-content {
+    transform: scale(1);
+}
+
+.modal-title {
+    font-size: 1.5rem; /* Equivalent to text-2xl */
+    font-weight: 700; /* Equivalent to font-bold */
+    color: var(--color-text-dark);
+    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+}
+
+.modal-form .form-group {
+    margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.modal-form .form-label {
+    display: block;
+    color: var(--color-text-dark); /* Equivalent to text-slate-700 */
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    font-weight: 500; /* Equivalent to font-medium */
+    margin-bottom: 0.5rem; /* Equivalent to mb-2 */
+}
+
+/* Input and Select fields are already styled globally by .input-field, .select-field */
+
+.form-group-checkbox {
+    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-field {
+    margin-right: 0.5rem; /* Equivalent to mr-2 */
+    height: 1rem; /* Equivalent to h-4 */
+    width: 1rem; /* Equivalent to w-4 */
+    color: var(--color-accent-primary); /* Equivalent to text-amber-600 */
+    border-color: var(--color-border-light);
+    border-radius: 0.25rem; /* Equivalent to rounded */
+    /* Focus ring color will be handled by custom outline/box-shadow */
+}
+.checkbox-field:focus {
+    box-shadow: 0 0 0 2px var(--color-accent-primary); /* Equivalent to focus:ring-amber-500 */
+}
+
+
+.form-label-inline {
+    color: var(--color-text-dark);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end; /* Equivalent to justify-end */
+    gap: 1rem; /* Equivalent to space-x-4 */
+}
+
+.button {
+    font-weight: 700; /* Equivalent to font-bold */
+    padding: 0.5rem 1.5rem; /* Equivalent to py-2 px-6 */
+    border-radius: 9999px; /* Equivalent to rounded-full */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* Equivalent to shadow-md */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.button-cancel {
+    background-color: var(--color-danger);
+    color: white;
+}
+.button-cancel:hover {
+    background-color: var(--color-danger-hover);
+}
+.button-cancel:focus {
+    box-shadow: 0 0 0 2px var(--color-danger-hover);
+}
+
+.button-save {
+    background-color: var(--color-accent-primary);
+    color: white;
+}
+.button-save:hover {
+    background-color: var(--color-accent-primary-hover);
+}
+.button-save:focus {
+    box-shadow: 0 0 0 2px var(--color-accent-primary-ring);
+}
+
+/* --- Alert Modal Specific Styles --- */
+.alert-modal-overlay {
+    z-index: 999; /* Equivalent to z-[999] */
+}
+
+.alert-modal-content {
+    max-width: 24rem; /* Equivalent to max-w-sm */
+    text-align: center;
+}
+
+.alert-icon {
+    font-size: 3.125rem; /* Equivalent to text-5xl */
+    margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.alert-message {
+    font-size: 1.125rem; /* Equivalent to text-lg */
+    font-weight: 500; /* Equivalent to font-medium */
+    color: var(--color-text-dark);
+    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+}
+
+.alert-buttons {
+    /* Uses .modal-buttons styling */
+}
+
+.button-default {
+    background-color: var(--color-border-light); /* Equivalent to bg-slate-300 */
+    color: var(--color-text-dark); /* Equivalent to text-slate-800 */
+}
+.button-default:hover {
+    background-color: var(--color-text-subtle); /* Equivalent to hover:bg-slate-400 */
+}
+.button-default:focus {
+    box-shadow: 0 0 0 2px var(--color-text-subtle);
+}
+
+.button-primary {
+    background-color: var(--color-accent-primary);
+    color: white;
+}
+.button-primary:hover {
+    background-color: var(--color-accent-primary-hover);
+}
+.button-primary:focus {
+    box-shadow: 0 0 0 2px var(--color-accent-primary-ring);
 }
