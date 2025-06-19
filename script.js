@@ -3,7 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Local Transaction Management ---
     let transactions = []; // Global array to store transactions
-    let expenseCategoryChartInstance; // To store the Chart.js instance
+    let expenseCategoryChartInstance; // To store the Chart.js instance for Dashboard
+    let reportCategoryChartInstance; // To store the Chart.js instance for Reports
+    let reportMonthlyTrendChartInstance; // To store the Chart.js instance for Reports
 
     // Function to load transactions from localStorage
     function loadTransactions() {
@@ -54,9 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
     darkModeToggle.addEventListener('click', () => {
         const isDark = document.documentElement.classList.contains('dark');
         setTheme(!isDark);
-        // Re-render chart to update legend color if theme changes
+        // Re-render charts to update legend/label colors if theme changes
         if (document.getElementById('dashboard-view').classList.contains('hidden') === false) {
-             renderExpenseCategoryChart();
+             renderExpenseCategoryChart(); // Re-render dashboard chart
+        }
+        if (document.getElementById('reports-view').classList.contains('hidden') === false) {
+            // Only re-render report charts if a report has been generated
+            if (!document.getElementById('report-results').classList.contains('hidden')) {
+                const filteredTransactions = getFilteredTransactionsForReports();
+                if (filteredTransactions.length > 0) {
+                    renderReportCategoryChart(filteredTransactions);
+                    renderReportMonthlyTrendChart(filteredTransactions);
+                }
+            }
         }
     });
 
@@ -86,6 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
             renderDashboard();
         } else if (viewId === 'history-view') {
             renderHistory();
+        } else if (viewId === 'reports-view') {
+            renderReports(); // Call renderReports when switching to reports view
         }
     }
 
@@ -179,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- Chart.js Integration (Expense Category Chart) ---
+    // --- Chart.js Integration (Dashboard Expense Category Chart) ---
     function renderExpenseCategoryChart() {
         const ctx = document.getElementById('expenseCategoryChart').getContext('2d');
 
@@ -279,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const transactionHistoryTableBody = document.getElementById('transaction-history-table-body');
     const noHistoryTransactionsEl = document.getElementById('no-history-transactions');
 
-    // Populate categories filter
+    // Populate categories filter for both history and transaction modal
     const categories = ['Groceries', 'Utilities', 'Rent', 'Salary', 'Freelance', 'Entertainment', 'Transport', 'Food', 'Healthcare', 'Education', 'Shopping', 'Travel', 'Investment', 'Gifts', 'Legal Fees', 'Miscellaneous'];
     function populateCategoryFilter() {
         historyCategoryFilter.innerHTML = '<option value="">All Categories</option>';
@@ -403,6 +417,327 @@ document.addEventListener('DOMContentLoaded', () => {
     historyDateFilter.addEventListener('change', renderHistory);
     customStartDateInput.addEventListener('change', renderHistory);
     customEndDateInput.addEventListener('change', renderHistory);
+
+
+    // --- Reports View Rendering & Logic ---
+    const reportDateFilter = document.getElementById('report-date-filter');
+    const reportCustomDateRangeDiv = document.getElementById('report-custom-date-range');
+    const reportCustomStartDateInput = document.getElementById('report-custom-start-date');
+    const reportCustomEndDateInput = document.getElementById('report-custom-end-date');
+    const generateReportButton = document.getElementById('generate-report-button');
+    const reportResultsDiv = document.getElementById('report-results');
+    const reportTotalIncomeEl = document.getElementById('report-total-income');
+    const reportTotalExpensesEl = document.getElementById('report-total-expenses');
+    const reportNetBalanceEl = document.getElementById('report-net-balance');
+    const reportCategoryChartCanvas = document.getElementById('reportCategoryChart');
+    const reportMonthlyTrendChartCanvas = document.getElementById('reportMonthlyTrendChart');
+    const noReportDataEl = document.getElementById('no-report-data');
+
+
+    function renderReports() {
+        // Reset report view
+        reportResultsDiv.classList.add('hidden');
+        noReportDataEl.classList.remove('hidden');
+
+        // Show/hide custom date range inputs based on selection
+        reportDateFilter.addEventListener('change', () => {
+            if (reportDateFilter.value === 'custom') {
+                reportCustomDateRangeDiv.classList.remove('hidden');
+            } else {
+                reportCustomDateRangeDiv.classList.add('hidden');
+            }
+        });
+
+        generateReportButton.addEventListener('click', generateReport);
+    }
+
+
+    function getFilteredTransactionsForReports() {
+        const selectedDateFilter = reportDateFilter.value;
+        const customStartDate = reportCustomStartDateInput.value ? new Date(reportCustomStartDateInput.value) : null;
+        const customEndDate = reportCustomEndDateInput.value ? new Date(reportCustomEndDateInput.value) : null;
+
+        return transactions.filter(t => {
+            let matchesDate = true;
+            const transactionDate = new Date(t.date);
+            transactionDate.setHours(0, 0, 0, 0); // Normalize to start of day
+
+            if (selectedDateFilter === 'this_month') {
+                const now = new Date();
+                const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                firstDayOfMonth.setHours(0, 0, 0, 0);
+                const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                lastDayOfMonth.setHours(23, 59, 59, 999);
+                matchesDate = transactionDate >= firstDayOfMonth && transactionDate <= lastDayOfMonth;
+            } else if (selectedDateFilter === 'last_month') {
+                const now = new Date();
+                const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                lastMonth.setHours(0, 0, 0, 0);
+                const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                endOfLastMonth.setHours(23, 59, 59, 999);
+                matchesDate = transactionDate >= lastMonth && transactionDate <= endOfLastMonth;
+            } else if (selectedDateFilter === 'this_year') {
+                const now = new Date();
+                const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
+                firstDayOfYear.setHours(0, 0, 0, 0);
+                const lastDayOfYear = new Date(now.getFullYear(), 11, 31);
+                lastDayOfYear.setHours(23, 59, 59, 999);
+                matchesDate = transactionDate >= firstDayOfYear && transactionDate <= lastDayOfYear;
+            } else if (selectedDateFilter === 'last_year') {
+                const now = new Date();
+                const lastYear = new Date(now.getFullYear() - 1, 0, 1);
+                lastYear.setHours(0, 0, 0, 0);
+                const endOfLastYear = new Date(now.getFullYear() - 1, 11, 31);
+                endOfLastYear.setHours(23, 59, 59, 999);
+                matchesDate = transactionDate >= lastYear && transactionDate <= endOfLastYear;
+            } else if (selectedDateFilter === 'custom') {
+                if (customStartDate && customEndDate) {
+                    customStartDate.setHours(0, 0, 0, 0);
+                    customEndDate.setHours(23, 59, 59, 999);
+                    matchesDate = transactionDate >= customStartDate && transactionDate <= customEndDate;
+                } else {
+                    matchesDate = false; // Custom range selected but dates not provided
+                }
+            } else if (selectedDateFilter === 'all') {
+                matchesDate = true; // No date filter applied
+            }
+            return matchesDate;
+        });
+    }
+
+    function generateReport() {
+        const filteredTransactions = getFilteredTransactionsForReports();
+
+        if (filteredTransactions.length === 0) {
+            showAlert('info', 'No transactions found for the selected period. Please adjust your filters.', false);
+            reportResultsDiv.classList.add('hidden');
+            noReportDataEl.classList.remove('hidden');
+            return;
+        }
+
+        noReportDataEl.classList.add('hidden');
+        reportResultsDiv.classList.remove('hidden');
+
+        // Calculate Summary
+        let totalIncome = 0;
+        let totalExpenses = 0;
+        filteredTransactions.forEach(t => {
+            if (t.type === 'income') {
+                totalIncome += parseFloat(t.amount);
+            } else {
+                totalExpenses += parseFloat(t.amount);
+            }
+        });
+        const netBalance = totalIncome - totalExpenses;
+
+        reportTotalIncomeEl.textContent = `₹${totalIncome.toFixed(2)}`;
+        reportTotalExpensesEl.textContent = `₹${totalExpenses.toFixed(2)}`;
+        reportNetBalanceEl.textContent = `₹${netBalance.toFixed(2)}`;
+        reportNetBalanceEl.parentElement.style.color = ''; // Clear previous color
+        if (netBalance >= 0) {
+            reportNetBalanceEl.parentElement.style.color = 'var(--color-income)';
+        } else {
+            reportNetBalanceEl.parentElement.style.color = 'var(--color-expense)';
+        }
+
+
+        // Generate Data for Category Breakdown Chart
+        renderReportCategoryChart(filteredTransactions);
+
+        // Generate Data for Monthly Trend Chart
+        renderReportMonthlyTrendChart(filteredTransactions);
+    }
+
+    // Chart.js Integration (Reports Category Breakdown Chart)
+    function renderReportCategoryChart(dataToChart) {
+        const ctx = reportCategoryChartCanvas.getContext('2d');
+
+        if (reportCategoryChartInstance) {
+            reportCategoryChartInstance.destroy();
+        }
+
+        const categoryData = {};
+        dataToChart.filter(t => t.type === 'expense').forEach(expense => { // Only show expenses in this chart
+            const category = expense.category || 'Uncategorized';
+            categoryData[category] = (categoryData[category] || 0) + parseFloat(expense.amount);
+        });
+
+        const labels = Object.keys(categoryData);
+        const data = Object.values(categoryData);
+
+        const backgroundColors = [
+            '#e62314',  // chili-red
+            '#ea4c15',  // golden-gate-bridge
+            '#ef8a17',  // tangerine
+            '#059669',  // emerald-600
+            '#0ea5e9',  // sky-600
+            '#f19e18',  // gamboge
+            '#e11d48',  // rose-600
+            '#ed7517',  // safety-orange
+            '#a78bfa',  // Light purple
+            '#3b82f6'   // Blue
+        ];
+        const borderColors = [
+            '#c71d10',
+            '#c44012',
+            '#cf7a13',
+            '#047857',
+            '#0284c7',
+            '#d98d15',
+            '#be123c',
+            '#d26b13',
+            '#8b5cf6',
+            '#2563eb'
+        ];
+
+        reportCategoryChartInstance = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColors.slice(0, labels.length),
+                    borderColor: borderColors.slice(0, labels.length),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-text-dark'),
+                            font: {
+                                size: 12,
+                                family: 'Montserrat'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += `₹${context.parsed.toFixed(2)}`;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Chart.js Integration (Reports Monthly Trend Chart)
+    function renderReportMonthlyTrendChart(dataToChart) {
+        const ctx = reportMonthlyTrendChartCanvas.getContext('2d');
+
+        if (reportMonthlyTrendChartInstance) {
+            reportMonthlyTrendChartInstance.destroy();
+        }
+
+        const monthlyIncome = {};
+        const monthlyExpenses = {};
+
+        dataToChart.forEach(t => {
+            const date = new Date(t.date);
+            const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; // YYYY-MM format
+
+            if (t.type === 'income') {
+                monthlyIncome[monthYear] = (monthlyIncome[monthYear] || 0) + parseFloat(t.amount);
+            } else {
+                monthlyExpenses[monthYear] = (monthlyExpenses[monthYear] || 0) + parseFloat(t.amount);
+            }
+        });
+
+        // Get all unique months and sort them
+        const allMonths = [...new Set([...Object.keys(monthlyIncome), ...Object.keys(monthlyExpenses)])].sort();
+
+        const incomeData = allMonths.map(month => monthlyIncome[month] || 0);
+        const expensesData = allMonths.map(month => monthlyExpenses[month] || 0);
+
+        reportMonthlyTrendChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: allMonths,
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: incomeData,
+                        borderColor: 'var(--color-income)', // Use CSS variable
+                        backgroundColor: 'rgba(5, 150, 105, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Expenses',
+                        data: expensesData,
+                        borderColor: 'var(--color-expense)', // Use CSS variable
+                        backgroundColor: 'rgba(225, 29, 72, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-text-dark')
+                        },
+                        grid: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-border-light')
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-text-dark'),
+                            callback: function(value) {
+                                return `₹${value.toFixed(0)}`; // Format Y-axis labels
+                            }
+                        },
+                        grid: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-border-light')
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-text-dark'),
+                            font: {
+                                size: 14,
+                                family: 'Montserrat'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += `₹${context.parsed.y.toFixed(2)}`;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
 
     // --- Transaction Modal Logic ---
@@ -562,6 +897,16 @@ document.addEventListener('DOMContentLoaded', () => {
         showAlert('success', 'Transaction deleted!', false);
         renderDashboard();
         renderHistory();
+        // Re-render reports if open and has data
+        if (document.getElementById('reports-view').classList.contains('hidden') === false) {
+             const filteredTransactions = getFilteredTransactionsForReports();
+             if (filteredTransactions.length > 0) {
+                 generateReport(); // Regenerate report if currently visible
+             } else {
+                 reportResultsDiv.classList.add('hidden');
+                 noReportDataEl.classList.remove('hidden');
+             }
+        }
     }
 
 
