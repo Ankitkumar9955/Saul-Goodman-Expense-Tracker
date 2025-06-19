@@ -63,6 +63,7 @@ html.dark {
     --color-expense: #f87171; /* Equivalent to rose-400 */
     --color-balance: #7dd3fc; /* Equivalent to sky-400 */
     --color-info: #60a5fa; /* Equivalent to blue-400 */
+    --color-info-darker: #2563eb;
     --color-danger: #f87171; /* Equivalent to rose-500 */
     --color-danger-hover: #ef4444;
 
@@ -83,7 +84,7 @@ html.dark {
 }
 
 body {
-    font-family: 'Roboto', sans-serif; /* Or 'Open Sans', 'Lato', etc. */
+    font-family: 'Montserrat', sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -467,6 +468,16 @@ html.dark .active-nav-button {
         grid-template-columns: repeat(3, 1fr); /* Equivalent to md:grid-cols-3 */
     }
 }
+/* Specific layout for report controls */
+.report-controls {
+    grid-template-columns: 1fr; /* Default to single column on small screens */
+}
+@media (min-width: 768px) { /* md breakpoint */
+    .report-controls {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Flexible columns for filters and button */
+    }
+}
+
 
 .input-field,
 .select-field {
@@ -541,17 +552,19 @@ html.dark .active-nav-button {
     background-color: var(--color-nav-button-default-hover); /* Equivalent to hover:bg-slate-50 */
 }
 
-.table-body td {
+.table-body-cell {
     padding: 0.75rem 1.5rem; /* Equivalent to py-3 px-6 */
     white-space: nowrap; /* Equivalent to whitespace-nowrap */
     font-size: 0.875rem; /* Equivalent to text-sm */
     color: var(--color-text-dark);
 }
-.table-body td:first-child {
+.table-body-cell:first-child {
     font-weight: 500; /* Equivalent to font-medium */
 }
-.table-body td.text-emerald-600 { color: var(--color-income); }
-.table-body td.text-rose-600 { color: var(--color-expense); }
+/* Specific colors for amounts in tables - controlled by JS adding classes */
+.table-body-cell.amount-income { color: var(--color-income); }
+.table-body-cell.amount-expense { color: var(--color-expense); }
+
 
 .edit-btn,
 .delete-btn {
@@ -578,66 +591,62 @@ html.dark .active-nav-button {
 }
 
 /* --- Reports View Section --- */
-.reports-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 31.25rem; /* Equivalent to min-h-[500px] (500/16 = 31.25rem) */
+/* The main container for reports already uses .card */
+
+.report-results {
+    margin-top: 1.5rem; /* Adds space after controls */
+    width: 100%;
 }
 
-.reports-title {
-    font-size: 2.25rem; /* Equivalent to text-4xl */
-    font-weight: 700; /* Equivalent to font-bold */
-    color: var(--color-gamboge); /* Using a primary color from your palette */
-    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
-    text-align: center;
-}
-
-.reports-text {
-    font-size: 1.25rem; /* Equivalent to text-xl */
+.report-summary {
+    background-color: var(--color-background-light);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
     color: var(--color-text-dark);
-    margin-bottom: 1rem; /* Equivalent to mb-4 */
-    text-align: center;
-    max-width: 42rem; /* Equivalent to max-w-2xl */
 }
-.logo-container {
+
+.report-summary h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-text-dark);
+}
+
+.report-summary p {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
     display: flex;
-    align-items: center;
-    margin-right: 20px; /* Adjust spacing as needed */
+    justify-content: space-between;
 }
 
-.logo {
-    width: 90px; /* Adjust size as needed */
-    height: auto;
-    border-radius: 5px; /* Optional: for rounded corners */
+.report-summary p span {
+    font-weight: 700;
 }
 
-.italic-text {
-    font-style: italic;
-    font-weight: 600; /* Equivalent to font-semibold */
+.report-summary .report-balance span {
+    font-size: 1.5rem; /* Larger for net balance */
 }
 
-.reports-caption {
-    font-size: 1rem; /* Equivalent to text-md */
-    color: var(--color-text-medium);
+
+.report-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+@media (min-width: 1024px) { /* lg breakpoint */
+    .report-charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.report-chart-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-text-dark);
     text-align: center;
-    max-width: 36rem; /* Equivalent to max-w-xl */
-}
-
-.reports-icon-container {
-    margin-top: 2rem; /* Equivalent to mt-8 */
-    color: var(--color-text-subtle);
-}
-
-.reports-icon {
-    font-size: 3.75rem; /* Equivalent to text-6xl */
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; /* Equivalent to animate-pulse */
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .5; }
 }
 
 
